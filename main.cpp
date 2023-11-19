@@ -47,10 +47,10 @@ int main() {
         }
         //-------------input handling----------------------
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-            player.rotate(-0.15f);
+            player.rotate(-0.12f);
 
         } if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-            player.rotate(0.15f);
+            player.rotate(0.12f);
 
         } if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
             float x = 0.3 * cos(-player.getRotation() / 57.295);
