@@ -29,6 +29,12 @@ int main() {
     player.setPosition(151, 151);
     player.setOrigin(25.f, 25.f);
 
+    sf::Texture handTexture;
+    handTexture.loadFromFile("textures/hand2.png");
+    sf::Sprite hand(handTexture);
+    hand.scale(2, 2);
+    hand.setPosition(SCREEN_WIDTH - 250, SCREEN_HEIGHT - 85);
+
     while (window.isOpen()) {
 
         sf::Event event;
@@ -114,7 +120,8 @@ int main() {
 
         }
         render3D(window, vectorArray);
-        drawHand(window);
+        window.draw(hand);
+        // animateHand(hand);
         window.display();
     }
 
@@ -216,11 +223,6 @@ void render3D(sf::RenderWindow &window, std::array<float, 90> vectorArray) {
 
 }
 
-void drawHand(sf::RenderWindow &window) {
-    sf::Texture handTexture;
-    handTexture.loadFromFile("textures/hand2.png");
-    sf::Sprite hand(handTexture);
-    hand.scale(2, 2);
-    hand.setPosition(SCREEN_WIDTH - 250, SCREEN_HEIGHT - 85);
-    window.draw(hand);
+void animateHand(sf::Sprite &hand) {
+
 }
