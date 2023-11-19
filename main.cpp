@@ -180,7 +180,7 @@ float castRay(sf::Vector2f startPos, sf::Vector2f endPos, std::array<std::string
             ray.x += yStep * (dx / dy);
             ray.y += yStep;
         }
-        if (sqrtf((ray.x - startPos.x) * (ray.x - startPos.x) + (ray.y - startPos.y) * (ray.y - startPos.y)) > 1200) {
+        if (sqrtf((ray.x - startPos.x) * (ray.x - startPos.x) + (ray.y - startPos.y) * (ray.y - startPos.y)) > 4000) {
             found = true;
         }
     }
