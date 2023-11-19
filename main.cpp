@@ -114,6 +114,7 @@ int main() {
 
         }
         render3D(window, vectorArray);
+        drawHand(window);
         window.display();
     }
 
@@ -215,4 +216,11 @@ void render3D(sf::RenderWindow &window, std::array<float, 90> vectorArray) {
 
 }
 
-
+void drawHand(sf::RenderWindow &window) {
+    sf::Texture handTexture;
+    handTexture.loadFromFile("textures/hand2.png");
+    sf::Sprite hand(handTexture);
+    hand.scale(2, 2);
+    hand.setPosition(SCREEN_WIDTH - 250, SCREEN_HEIGHT - 85);
+    window.draw(hand);
+}

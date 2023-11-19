@@ -7,4 +7,6 @@ float castRay(sf::Vector2f startPos, sf::Vector2f endPos, std::array<std::string
 
 void render3D(sf::RenderWindow &window, std::array<float, 90> vectorArray);
 
+void drawHand(sf::RenderWindow &window);
+
 #endif //RAYCASTING_FUNCTIONS_H
