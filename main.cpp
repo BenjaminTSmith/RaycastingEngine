@@ -108,7 +108,10 @@ int main() {
             float rayX = player.getPosition().x + 100 * cos((-player.getRotation() - i) / 57.295);
             float rayY = player.getPosition().y + -100 * sin((-player.getRotation() - i) / 57.295);
             sf::Vector2f rayPos(rayX, rayY);
+            // fish-eye effect
             vectorArray[i + 45] = castRay(player.getPosition(), rayPos, mapArray, window);
+            // non fish-eye effect
+
         }
         render3D(window, vectorArray);
         window.display();
