@@ -33,7 +33,8 @@ int main() {
     handTexture.loadFromFile("textures/hand2.png");
     sf::Sprite hand(handTexture);
     hand.scale(2, 2);
-    hand.setPosition(SCREEN_WIDTH - 250, SCREEN_HEIGHT - 85);
+    hand.rotate(10);
+    hand.setPosition(SCREEN_WIDTH - 250, SCREEN_HEIGHT - 100);
 
     while (window.isOpen()) {
 
