@@ -8,4 +8,4 @@
 /dataSources.local.xml
 # CLion project files
 .idea
-cmake-build-*
+cmake-build-debug
