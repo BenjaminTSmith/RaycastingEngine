@@ -207,8 +207,12 @@ float castRay(sf::Vector2f startPos, sf::Vector2f endPos, std::array<std::string
 
 void render3D(sf::RenderWindow &window, std::array<float, 90> vectorArray) {
 
+    sf::RectangleShape sky(sf::Vector2f(SCREEN_WIDTH, SCREEN_HEIGHT));
+    sky.setFillColor(sf::Color(113, 188, 225));
+    window.draw(sky);
+
     sf::RectangleShape ground(sf::Vector2f(SCREEN_WIDTH, SCREEN_HEIGHT / 2));
-    ground.setFillColor(sf::Color(10, 0, 40));
+    ground.setFillColor(sf::Color(127, 132, 133));
     ground.setPosition(0, SCREEN_HEIGHT / 2);
     window.draw(ground);
 
