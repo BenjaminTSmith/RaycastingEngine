@@ -115,10 +115,10 @@ int main() {
             float rayX = player.getPosition().x + 100 * cos((-player.getRotation() - i) / 57.295);
             float rayY = player.getPosition().y + -100 * sin((-player.getRotation() - i) / 57.295);
             sf::Vector2f rayPos(rayX, rayY);
-            // fish-eye effect
+            //------fish-eye effect------
             vectorArray[i + 45] = castRay(player.getPosition(), rayPos, mapArray, window);
-            // non fish-eye effect
-
+            //------non fish-eye effect-------
+            // vectorArray[i + 45] = cos((-player.getRotation() - i) / 57.295) * castRay(player.getPosition(), rayPos, mapArray, window);
         }
         render3D(window, vectorArray);
         window.draw(hand);
@@ -193,7 +193,7 @@ float castRay(sf::Vector2f startPos, sf::Vector2f endPos, std::array<std::string
             found = true;
         }
     }
-
+    // code for displaying circles at end of each ray in 2D mode
     /*sf::CircleShape circle(10.f);
     circle.setOrigin(5.f, 5.f);
     circle.setOutlineColor(sf::Color::Green);
