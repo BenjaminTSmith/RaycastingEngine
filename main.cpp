@@ -115,10 +115,7 @@ int main() {
             float rayX = player.getPosition().x + 100 * cos((-player.getRotation() - i) / 57.295);
             float rayY = player.getPosition().y + -100 * sin((-player.getRotation() - i) / 57.295);
             sf::Vector2f rayPos(rayX, rayY);
-            //------fish-eye effect------
-            // vectorArray[i + 45] = castRay(player.getPosition(), rayPos, mapArray, window);
-            //------non fish-eye effect-------
-            vectorArray[i + 45] = cos(-i / 57.295) * castRay(player.getPosition(), rayPos, mapArray, window);
+            vectorArray[i + 45] = castRay(player.getPosition(), rayPos, mapArray, window);
         }
         render3D(window, vectorArray);
         window.draw(hand);
@@ -215,15 +212,17 @@ void render3D(sf::RenderWindow &window, std::array<float, 90> vectorArray) {
     ground.setFillColor(sf::Color(127, 132, 133));
     ground.setPosition(0, SCREEN_HEIGHT / 2);
     window.draw(ground);
-    // number from 0-255 that determines how bright everything is
-    float brightness = 50;
+    // number from 0-255 that determines how dark everything is
+    float gamma = 10;
     float projectionHeight = SCREEN_HEIGHT / 2 / tan(1.309);
 
     for (int i = 0; i < vectorArray.size(); i++) {
-        sf::RectangleShape column(sf::Vector2f(7.111f, SCREEN_HEIGHT * projectionHeight / vectorArray[i]));
-        column.setOrigin(sf::Vector2f(0.5f * 7.111f, SCREEN_HEIGHT * projectionHeight / vectorArray[i] * 0.5f));
-        column.setFillColor(sf::Color(0, 255 / (brightness * ((vectorArray[i] - 1) / (3999)) + 1), 0));
-        column.setPosition((float) i * 7.111f, SCREEN_HEIGHT / 2);
+        sf::RectangleShape column(sf::Vector2f(7.111f, SCREEN_HEIGHT * projectionHeight / (vectorArray[i] * cos((i - 45) / 57.295))));
+        column.setOrigin(sf::Vector2f(0.f, SCREEN_HEIGHT * projectionHeight / (cos((i - 45) / 57.295) * vectorArray[i]) * 0.5f));
+        column.setFillColor(sf::Color(0, 255 / (gamma * ((vectorArray[i] - 1) / (3999)) + 1), 0));
+        float rayProjectionPosition = 0.5f * tan((i - 45) / 57.296) / tan(45 / 57.296);
+        float currentColumn = SCREEN_WIDTH - (SCREEN_WIDTH * (0.5f - rayProjectionPosition));
+        column.setPosition(currentColumn, SCREEN_HEIGHT / 2);
         window.draw(column);
     }
 
