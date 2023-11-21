@@ -30,7 +30,7 @@ int main() {
     player.setOrigin(25.f, 25.f);
 
     sf::Texture handTexture;
-    handTexture.loadFromFile("textures/hand2.png");
+    handTexture.loadFromFile("textures/hand1.png");
     sf::Sprite hand(handTexture);
     hand.scale(2, 2);
     hand.rotate(10);
@@ -217,11 +217,13 @@ void render3D(sf::RenderWindow &window, std::array<float, 90> vectorArray) {
     float projectionHeight = SCREEN_HEIGHT / 2 / tan(1.309);
 
     for (int i = 0; i < vectorArray.size(); i++) {
-        sf::RectangleShape column(sf::Vector2f(7.111f, SCREEN_HEIGHT * projectionHeight / (vectorArray[i] * cos((i - 45) / 57.295))));
-        column.setOrigin(sf::Vector2f(0.f, SCREEN_HEIGHT * projectionHeight / (cos((i - 45) / 57.295) * vectorArray[i]) * 0.5f));
-        column.setFillColor(sf::Color(0, 255 / (gamma * ((vectorArray[i] - 1) / (3999)) + 1), 0));
         float rayProjectionPosition = 0.5f * tan((i - 45) / 57.296) / tan(45 / 57.296);
         float currentColumn = SCREEN_WIDTH - (SCREEN_WIDTH * (0.5f - rayProjectionPosition));
+        float nextRayProjectionPosition = 0.5f * tan((i - 44) / 57.296) / tan(45 / 57.295);
+        float nextColumn = SCREEN_WIDTH - (SCREEN_WIDTH * (0.5f - nextRayProjectionPosition));
+        sf::RectangleShape column(sf::Vector2f(nextColumn - currentColumn + 1, SCREEN_HEIGHT * projectionHeight / (vectorArray[i] * cos((i - 45) / 57.295))));
+        column.setOrigin(sf::Vector2f(0.f, SCREEN_HEIGHT * projectionHeight / (cos((i - 45) / 57.295) * vectorArray[i]) * 0.5f));
+        column.setFillColor(sf::Color(0, 255 / (gamma * ((vectorArray[i] - 1) / (3999)) + 1), 0));
         column.setPosition(currentColumn, SCREEN_HEIGHT / 2);
         window.draw(column);
     }
