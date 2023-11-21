@@ -123,7 +123,6 @@ int main() {
         window.display();
     }
 
-
     return 0;
 }
 
@@ -221,7 +220,7 @@ void render3D(sf::RenderWindow &window, std::array<float, 90> vectorArray) {
         float currentColumn = SCREEN_WIDTH - (SCREEN_WIDTH * (0.5f - rayProjectionPosition));
         float nextRayProjectionPosition = 0.5f * tan((i - 44) / 57.296) / tan(45 / 57.295);
         float nextColumn = SCREEN_WIDTH - (SCREEN_WIDTH * (0.5f - nextRayProjectionPosition));
-        sf::RectangleShape column(sf::Vector2f(nextColumn - currentColumn + 1, SCREEN_HEIGHT * projectionHeight / (vectorArray[i] * cos((i - 45) / 57.295))));
+        sf::RectangleShape column(sf::Vector2f(nextColumn - currentColumn, SCREEN_HEIGHT * projectionHeight / (vectorArray[i] * cos((i - 45) / 57.295))));
         column.setOrigin(sf::Vector2f(0.f, SCREEN_HEIGHT * projectionHeight / (cos((i - 45) / 57.295) * vectorArray[i]) * 0.5f));
         column.setFillColor(sf::Color(0, 255 / (gamma * ((vectorArray[i] - 1) / (3999)) + 1), 0));
         column.setPosition(currentColumn, SCREEN_HEIGHT / 2);
