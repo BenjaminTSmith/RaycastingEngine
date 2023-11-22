@@ -36,6 +36,10 @@ int main() {
     hand.rotate(10);
     hand.setPosition(SCREEN_WIDTH - 250, SCREEN_HEIGHT - 100);
 
+    sf::Texture wallTexture;
+    wallTexture.loadFromFile("textures/wall1.png");
+    sf::Sprite wall(wallTexture);
+
     while (window.isOpen()) {
 
         sf::Event event;
@@ -115,9 +119,9 @@ int main() {
             float rayX = player.getPosition().x + 100 * cos((-player.getRotation() - i) / 57.295);
             float rayY = player.getPosition().y + -100 * sin((-player.getRotation() - i) / 57.295);
             sf::Vector2f rayPos(rayX, rayY);
-            vectorArray[i + 45] = castRay(player.getPosition(), rayPos, mapArray, window);
+            vectorArray[i + 45] = castRay(player.getPosition(), rayPos, mapArray, window, wall);
         }
-        render3D(window, vectorArray);
+        render3D(window, vectorArray, wall);
         window.draw(hand);
         // animateHand(hand);
         window.display();
@@ -147,7 +151,7 @@ void drawMap(sf::RenderWindow &window, std::array<std::string, 10> &mapArray) {
 
 }
 
-float castRay(sf::Vector2f startPos, sf::Vector2f endPos, std::array<std::string, 10> &mapArray, sf::RenderWindow &window) {
+float castRay(sf::Vector2f startPos, sf::Vector2f endPos, std::array<std::string, 10> &mapArray, sf::RenderWindow &window, sf::Sprite &wall) {
 
     float dx = endPos.x - startPos.x;
     float dy = endPos.y - startPos.y;
@@ -189,6 +193,7 @@ float castRay(sf::Vector2f startPos, sf::Vector2f endPos, std::array<std::string
             found = true;
         }
     }
+
     // code for displaying circles at end of each ray in 2D mode
     /*sf::CircleShape circle(10.f);
     circle.setOrigin(5.f, 5.f);
@@ -201,7 +206,7 @@ float castRay(sf::Vector2f startPos, sf::Vector2f endPos, std::array<std::string
     return sqrtf((ray.x - startPos.x) * (ray.x - startPos.x) + (ray.y - startPos.y) * (ray.y - startPos.y));
 }
 
-void render3D(sf::RenderWindow &window, std::array<float, 90> vectorArray) {
+void render3D(sf::RenderWindow &window, std::array<float, 90> vectorArray, sf::Sprite &wall) {
 
     sf::RectangleShape sky(sf::Vector2f(SCREEN_WIDTH, SCREEN_HEIGHT));
     sky.setFillColor(sf::Color(113, 188, 225));
@@ -220,15 +225,13 @@ void render3D(sf::RenderWindow &window, std::array<float, 90> vectorArray) {
         float currentColumn = SCREEN_WIDTH - (SCREEN_WIDTH * (0.5f - rayProjectionPosition));
         float nextRayProjectionPosition = 0.5f * tan((i - 44) / 57.296) / tan(45 / 57.295);
         float nextColumn = SCREEN_WIDTH - (SCREEN_WIDTH * (0.5f - nextRayProjectionPosition));
-        sf::RectangleShape column(sf::Vector2f(nextColumn - currentColumn, SCREEN_HEIGHT * projectionHeight / (vectorArray[i] * cos((i - 45) / 57.295))));
+        sf::RectangleShape column(sf::Vector2f(nextColumn - currentColumn + 1, SCREEN_HEIGHT * projectionHeight / (vectorArray[i] * cos((i - 45) / 57.295))));
+
+
         column.setOrigin(sf::Vector2f(0.f, SCREEN_HEIGHT * projectionHeight / (cos((i - 45) / 57.295) * vectorArray[i]) * 0.5f));
         column.setFillColor(sf::Color(0, 255 / (gamma * ((vectorArray[i] - 1) / (3999)) + 1), 0));
         column.setPosition(currentColumn, SCREEN_HEIGHT / 2);
         window.draw(column);
     }
-
-}
-
-void animateHand(sf::Sprite &hand) {
 
 }
