@@ -115,13 +115,14 @@ int main() {
         // window.draw(player);
         const int fov = 90;
         std::array<float, fov> vectorArray = {};
+        std::vector<int> textureVector = {};
         for (int i = -fov / 2; i < fov / 2; i++) {
             float rayX = player.getPosition().x + 100 * cos((-player.getRotation() - i) / 57.295);
             float rayY = player.getPosition().y + -100 * sin((-player.getRotation() - i) / 57.295);
             sf::Vector2f rayPos(rayX, rayY);
-            vectorArray[i + 45] = castRay(player.getPosition(), rayPos, mapArray, window, wall);
+            vectorArray[i + 45] = castRay(player.getPosition(), rayPos, mapArray, window, wall, textureVector);
         }
-        render3D(window, vectorArray, wall);
+        render3D(window, vectorArray, wall, textureVector);
         window.draw(hand);
         // animateHand(hand);
         window.display();
@@ -151,7 +152,8 @@ void drawMap(sf::RenderWindow &window, std::array<std::string, 10> &mapArray) {
 
 }
 
-float castRay(sf::Vector2f startPos, sf::Vector2f endPos, std::array<std::string, 10> &mapArray, sf::RenderWindow &window, sf::Sprite &wall) {
+float castRay(sf::Vector2f startPos, sf::Vector2f endPos, std::array<std::string, 10> &mapArray,
+              sf::RenderWindow &window, sf::Sprite &wall, std::vector<int> &textureVector) {
 
     float dx = endPos.x - startPos.x;
     float dy = endPos.y - startPos.y;
@@ -178,6 +180,15 @@ float castRay(sf::Vector2f startPos, sf::Vector2f endPos, std::array<std::string
     while (!found) {
         if ((int) (ray.y / 100) <= mapArray.size() && (int) (ray.x / 100) <= mapArray[(int) ray.y / 100].size()) {
             if (mapArray[(int) (ray.y / 100)][(int) (ray.x / 100)] != '.') {
+
+                float roundedX = std::round(ray.x / 100);
+                float roundedY = std::round(ray.y / 100);
+
+                if (std::abs(ray.x - roundedX * 100) < std::abs(ray.y - roundedY * 100)) {
+                    textureVector.push_back((int) ray.y % 100);
+                } else {
+                    textureVector.push_back((int) ray.x % 100);
+                }
                 found = true;
             }
         }
@@ -188,9 +199,6 @@ float castRay(sf::Vector2f startPos, sf::Vector2f endPos, std::array<std::string
         } else {
             ray.x += yStep * (dx / dy);
             ray.y += yStep;
-        }
-        if (sqrtf((ray.x - startPos.x) * (ray.x - startPos.x) + (ray.y - startPos.y) * (ray.y - startPos.y)) > 4000) {
-            found = true;
         }
     }
 
@@ -203,10 +211,15 @@ float castRay(sf::Vector2f startPos, sf::Vector2f endPos, std::array<std::string
     circle.setPosition(ray.x, ray.y);
     window.draw(circle);*/
 
+    /*switch (mapArray[(int) (ray.y / 100)][(int) (ray.x / 100)]) {
+        case '#':
+    }*/
+
     return sqrtf((ray.x - startPos.x) * (ray.x - startPos.x) + (ray.y - startPos.y) * (ray.y - startPos.y));
 }
 
-void render3D(sf::RenderWindow &window, std::array<float, 90> vectorArray, sf::Sprite &wall) {
+void render3D(sf::RenderWindow &window, std::array<float, 90> vectorArray, sf::Sprite &wall,
+              std::vector<int> &textureVector) {
 
     sf::RectangleShape sky(sf::Vector2f(SCREEN_WIDTH, SCREEN_HEIGHT));
     sky.setFillColor(sf::Color(113, 188, 225));
@@ -225,13 +238,19 @@ void render3D(sf::RenderWindow &window, std::array<float, 90> vectorArray, sf::S
         float currentColumn = SCREEN_WIDTH - (SCREEN_WIDTH * (0.5f - rayProjectionPosition));
         float nextRayProjectionPosition = 0.5f * tan((i - 44) / 57.296) / tan(45 / 57.295);
         float nextColumn = SCREEN_WIDTH - (SCREEN_WIDTH * (0.5f - nextRayProjectionPosition));
-        sf::RectangleShape column(sf::Vector2f(nextColumn - currentColumn + 1, SCREEN_HEIGHT * projectionHeight / (vectorArray[i] * cos((i - 45) / 57.295))));
-
+        /*sf::RectangleShape column(sf::Vector2f(nextColumn - currentColumn + 1, SCREEN_HEIGHT * projectionHeight / (vectorArray[i] * cos((i - 45) / 57.295))));
 
         column.setOrigin(sf::Vector2f(0.f, SCREEN_HEIGHT * projectionHeight / (cos((i - 45) / 57.295) * vectorArray[i]) * 0.5f));
         column.setFillColor(sf::Color(0, 255 / (gamma * ((vectorArray[i] - 1) / (3999)) + 1), 0));
         column.setPosition(currentColumn, SCREEN_HEIGHT / 2);
-        window.draw(column);
+        window.draw(column);*/
+
+        wall.setTextureRect(sf::IntRect(textureVector.at(i), 0,
+                                        nextColumn - currentColumn + 1, 100));
+        wall.setScale(1, (SCREEN_HEIGHT * projectionHeight / (cos((i - 45) / 57.295) * vectorArray[i])) / 100);
+        wall.setOrigin(sf::Vector2f(0.f, (SCREEN_HEIGHT * projectionHeight / (cos((i - 45) / 57.295) * vectorArray[i]) * 0.5f)));
+        wall.setPosition(currentColumn, SCREEN_HEIGHT / 2);
+        window.draw(wall);
     }
 
 }
