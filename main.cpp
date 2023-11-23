@@ -247,8 +247,11 @@ void render3D(sf::RenderWindow &window, std::array<float, 90> vectorArray, sf::S
 
         wall.setTextureRect(sf::IntRect(textureVector.at(i), 0,
                                         nextColumn - currentColumn + 1, 100));
-        wall.setScale(1, (SCREEN_HEIGHT * projectionHeight / (cos((i - 45) / 57.295) * vectorArray[i])) / 100);
-        wall.setOrigin(sf::Vector2f(0.f, (SCREEN_HEIGHT * projectionHeight / (cos((i - 45) / 57.295) * vectorArray[i]) * 0.5f)));
+        wall.setColor(sf::Color(255 / (gamma * ((vectorArray[i] - 1) / 3999) + 1),
+                                255 / (gamma * ((vectorArray[i] - 1) / 3999) + 1),
+                                255 / (gamma * ((vectorArray[i] - 1) / 3999 + 1))));
+        wall.setOrigin(sf::Vector2f(0.f, 50));
+        wall.setScale(1, ((SCREEN_HEIGHT * projectionHeight / (vectorArray[i] * cos((i - 45) / 57.295)))) / 100);
         wall.setPosition(currentColumn, SCREEN_HEIGHT / 2);
         window.draw(wall);
     }
