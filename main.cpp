@@ -37,7 +37,7 @@ int main() {
     hand.setPosition(SCREEN_WIDTH - 250, SCREEN_HEIGHT - 100);
 
     sf::Texture wallTexture;
-    wallTexture.loadFromFile("textures/wall1.png");
+    wallTexture.loadFromFile("textures/bricks.jpg");
     sf::Sprite wall(wallTexture);
 
     while (window.isOpen()) {
@@ -250,14 +250,14 @@ void render3D(sf::RenderWindow &window, std::array<float, SCREEN_WIDTH> vectorAr
         column.setPosition(currentColumn, SCREEN_HEIGHT / 2);
         window.draw(column);*/
 
-        wall.setTextureRect(sf::IntRect(textureVector.at(i), 0,
-                                        nextColumn - currentColumn + 1, 100));
+        wall.setTextureRect(sf::IntRect(textureVector.at(i) * (SCREEN_WIDTH / 100), 0,
+                                        nextColumn - currentColumn + 1, SCREEN_WIDTH));
         /*wall.setColor(sf::Color(255 / (gamma * ((vectorArray[i] - 1) / 3999) + 1),
                                 255 / (gamma * ((vectorArray[i] - 1) / 3999) + 1),
                                 255 / (gamma * ((vectorArray[i] - 1) / 3999 + 1))));*/
-        wall.setOrigin(sf::Vector2f(0.f, 50));
+        wall.setOrigin(sf::Vector2f(0.f, 320));
         wall.setScale(1, ((SCREEN_HEIGHT * projectionHeight / (vectorArray[i] * cos((
-                (i - SCREEN_WIDTH / 2) * screenToFOV) / 57.295)))) / 100);
+                (i - SCREEN_WIDTH / 2) * screenToFOV) / 57.295)))) / SCREEN_WIDTH);
         wall.setPosition(currentColumn, SCREEN_HEIGHT / 2);
         window.draw(wall);
     }
