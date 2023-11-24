@@ -113,14 +113,17 @@ int main() {
         window.clear(sf::Color::Black);
         // drawMap(window, mapArray);
         // window.draw(player);
-        const int fov = 90;
-        std::array<float, fov> vectorArray = {};
+        int FOV = 90;
+        std::array<float, SCREEN_WIDTH> vectorArray = {};
         std::vector<int> textureVector = {};
-        for (int i = -fov / 2; i < fov / 2; i++) {
-            float rayX = player.getPosition().x + 100 * cos((-player.getRotation() - i) / 57.295);
-            float rayY = player.getPosition().y + -100 * sin((-player.getRotation() - i) / 57.295);
+        float screenToFOV = (float) FOV / SCREEN_WIDTH;
+        for (int i = 0; i < SCREEN_WIDTH; i++) {
+            float rayX = player.getPosition().x + 100 * cos(
+                    (-player.getRotation() - (i - SCREEN_WIDTH / 2) * screenToFOV) / 57.295);
+            float rayY = player.getPosition().y + -100 * sin(
+                    (-player.getRotation() - (i - SCREEN_WIDTH / 2) * screenToFOV) / 57.295);
             sf::Vector2f rayPos(rayX, rayY);
-            vectorArray[i + 45] = castRay(player.getPosition(), rayPos, mapArray, window, wall, textureVector);
+            vectorArray[i] = castRay(player.getPosition(), rayPos, mapArray, window, wall, textureVector);
         }
         render3D(window, vectorArray, wall, textureVector);
         window.draw(hand);
@@ -218,9 +221,11 @@ float castRay(sf::Vector2f startPos, sf::Vector2f endPos, std::array<std::string
     return sqrtf((ray.x - startPos.x) * (ray.x - startPos.x) + (ray.y - startPos.y) * (ray.y - startPos.y));
 }
 
-void render3D(sf::RenderWindow &window, std::array<float, 90> vectorArray, sf::Sprite &wall,
+void render3D(sf::RenderWindow &window, std::array<float, SCREEN_WIDTH> vectorArray, sf::Sprite &wall,
               std::vector<int> &textureVector) {
 
+    int FOV = 90;
+    float screenToFOV = (float) FOV / SCREEN_WIDTH;
     sf::RectangleShape sky(sf::Vector2f(SCREEN_WIDTH, SCREEN_HEIGHT));
     sky.setFillColor(sf::Color(113, 188, 225));
     window.draw(sky);
@@ -234,9 +239,9 @@ void render3D(sf::RenderWindow &window, std::array<float, 90> vectorArray, sf::S
     float projectionHeight = SCREEN_HEIGHT / 2 / tan(1.309);
 
     for (int i = 0; i < vectorArray.size(); i++) {
-        float rayProjectionPosition = 0.5f * tan((i - 45) / 57.296) / tan(45 / 57.296);
+        float rayProjectionPosition = 0.5f * tan(((i - SCREEN_WIDTH / 2) * screenToFOV) / 57.296) / tan(45 / 57.296);
         float currentColumn = SCREEN_WIDTH - (SCREEN_WIDTH * (0.5f - rayProjectionPosition));
-        float nextRayProjectionPosition = 0.5f * tan((i - 44) / 57.296) / tan(45 / 57.295);
+        float nextRayProjectionPosition = 0.5f * tan((((i + 1) - SCREEN_WIDTH / 2) * screenToFOV) / 57.296) / tan(45 / 57.296);
         float nextColumn = SCREEN_WIDTH - (SCREEN_WIDTH * (0.5f - nextRayProjectionPosition));
         /*sf::RectangleShape column(sf::Vector2f(nextColumn - currentColumn + 1, SCREEN_HEIGHT * projectionHeight / (vectorArray[i] * cos((i - 45) / 57.295))));
 
@@ -247,11 +252,12 @@ void render3D(sf::RenderWindow &window, std::array<float, 90> vectorArray, sf::S
 
         wall.setTextureRect(sf::IntRect(textureVector.at(i), 0,
                                         nextColumn - currentColumn + 1, 100));
-        wall.setColor(sf::Color(255 / (gamma * ((vectorArray[i] - 1) / 3999) + 1),
+        /*wall.setColor(sf::Color(255 / (gamma * ((vectorArray[i] - 1) / 3999) + 1),
                                 255 / (gamma * ((vectorArray[i] - 1) / 3999) + 1),
-                                255 / (gamma * ((vectorArray[i] - 1) / 3999 + 1))));
+                                255 / (gamma * ((vectorArray[i] - 1) / 3999 + 1))));*/
         wall.setOrigin(sf::Vector2f(0.f, 50));
-        wall.setScale(1, ((SCREEN_HEIGHT * projectionHeight / (vectorArray[i] * cos((i - 45) / 57.295)))) / 100);
+        wall.setScale(1, ((SCREEN_HEIGHT * projectionHeight / (vectorArray[i] * cos((
+                (i - SCREEN_WIDTH / 2) * screenToFOV) / 57.295)))) / 100);
         wall.setPosition(currentColumn, SCREEN_HEIGHT / 2);
         window.draw(wall);
     }
